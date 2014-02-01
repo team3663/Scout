@@ -95,8 +95,9 @@ namespace ServerControl1
         {
             title = new Label();
             title.Text = Title;
-            title.Width = 100;
+            title.Width = 300;
             Controls.Add(title);
+            title.Font.Size = 36;
 
             Controls.Add(new LiteralControl("&nbsp; &nbsp;"));
 
@@ -104,16 +105,20 @@ namespace ServerControl1
             MinusButton.Text = "-";
             MinusButton.BackColor = System.Drawing.Color.Red;
             MinusButton.Click += MinusButton_Click;
-            MinusButton.Width = 30;
+            MinusButton.Width = 150;
+            MinusButton.Font.Size = 36;
+            MinusButton.Height = 100;
             Controls.Add(MinusButton);
 
             Controls.Add(new LiteralControl("&nbsp; &nbsp;"));
 
             IntBox = new TextBox();
             IntBox.Text = CurrentValue.ToString();
-            IntBox.Width = 50;
+            IntBox.Width = 100;
             IntBox.ReadOnly = true;
             Controls.Add(IntBox);
+            IntBox.Height = 50;
+            IntBox.Font.Size = 24;
 
             Controls.Add(new LiteralControl("&nbsp; &nbsp;"));
 
@@ -121,7 +126,9 @@ namespace ServerControl1
             PlusButton.Text = "+";
             PlusButton.BackColor = System.Drawing.Color.Green;
             PlusButton.Click += PlusButton_Click;
-            PlusButton.Width = 30;
+            PlusButton.Width = 150;
+            PlusButton.Height = 100;
+            PlusButton.Font.Size = 36;
             Controls.Add(PlusButton);
 
         }
@@ -133,6 +140,7 @@ namespace ServerControl1
             if (Temp > MinimumValue)
             {
                 CurrentValue = Temp - 1;
+                IntBox.Text = CurrentValue.ToString();
             }
             
         }
@@ -145,6 +153,8 @@ namespace ServerControl1
             if (Temp < MaximumValue)
             {
                 CurrentValue = Temp + 1;
+                IntBox.Text = CurrentValue.ToString();
+
             }
         }
  
