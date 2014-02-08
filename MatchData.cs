@@ -230,12 +230,9 @@ namespace ParserWebApplication
 
         public static void ParseDateFile(string filename)
         {
-            // matchDataList = new List<MatchData>();
-            FileInfo myFile = new FileInfo(filename);
-            StreamReader myStream = myFile.OpenText();
-            while (!myStream.EndOfStream)
+            string[] readText = File.ReadAllLines(filename);
+            foreach(string line in readText)
             {
-                string line = myStream.ReadLine();
                 string[] subString = line.Split(new char[] {','});
                 MatchData MyData = new MatchData(subString);
                 int teamNumber = int.Parse(subString[1]);
@@ -245,12 +242,9 @@ namespace ParserWebApplication
                     newTeam = new TeamData(teamNumber);
                 }
                 newTeam.AddTeamData(MyData);
-                // matchDataList.Add(MyData);
-
             }
 
 
-            myStream.Close();
         }
 
         public static List<MatchData> GetMatchData()

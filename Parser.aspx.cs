@@ -11,7 +11,11 @@ namespace ParserWebApplication
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            MatchData.ParseDateFile(@"C:\Temp\FakeMatch.txt");
+            if (!Page.IsPostBack)
+            {
+                MatchData.ParseDateFile(@"C:\Temp\FakeMatch.txt");
+            }
+            
 
         }
 

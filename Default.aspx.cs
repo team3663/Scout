@@ -11,9 +11,11 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // ScriptManager.GetCurrent(Page).AuthenticationService.Path = "/Authentication_JSON_AppService.axd";
             if (!Page.IsPostBack)
             {
                 MultiView1.ActiveViewIndex = 0;
+                
             }
         }
 
@@ -37,18 +39,18 @@ namespace WebApplication1
             }
             
             
-            String Donut = String.Format("{0},", TextBox1.Text);
-            Donut += String.Format("{0},", TextBox2.Text);
-            Donut += String.Format("{0},", CheckBoxList1.Items[0].Selected);
-            Donut += String.Format("{0},", CheckBoxList1.Items[1].Selected);
-            Donut += String.Format("{0},", CheckBoxList1.Items[2].Selected);
-            Donut += String.Format("{0},", CheckBoxList1.Items[3].Selected);
-            Donut += String.Format("{0},", CheckBoxList1.Items[4].Selected);
-            Donut += String.Format("{0},", PositionList.Items[0].Selected);
-            Donut += String.Format("{0},", PositionList.Items[1].Selected);
-            Donut += String.Format("{0},", PositionList.Items[2].Selected);
-            Donut += String.Format("{0},", PositionList.Items[3].Selected);
-            Donut += String.Format("{0},", PositionList.Items[4].Selected);
+            String Donut = String.Format("{0},", TextBox1.Text.Replace(",", "&com;"));
+            Donut += String.Format("{0},", TextBox2.Text.Replace(",", "&com;"));
+            Donut += String.Format("{0},", ServerControl31.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl32.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl33.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl34.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl35.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl36.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl37.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl38.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl39.ButtonSelected());
+            Donut += String.Format("{0},", ServerControl310.ButtonSelected());
             Donut += String.Format("{0},", ServerControl13.CurrentValue);
             Donut += String.Format("{0},", ServerControl12.CurrentValue);
             Donut += String.Format("{0},", ServerControl11.CurrentValue);
@@ -66,10 +68,51 @@ namespace WebApplication1
             Donut += String.Format("{0},", ServerControl115.CurrentValue);
             Donut += String.Format("{0},", ServerControl116.CurrentValue);
             Donut += String.Format("{0},", ServerControl117.CurrentValue);
-            Donut += String.Format("{0},", CommentsBox.Text);
+            Donut += String.Format("{0}", CommentsBox.Text.Replace(",", "&com;"));
             MyStream.WriteLine(Donut);
 
             MyStream.Close();
+
+            TextBox1.Text = "";
+            TextBox2.Text = "";
+            ServerControl31.InitTerm();
+            ServerControl32.InitTerm();
+            ServerControl33.InitTerm();
+            ServerControl34.InitTerm();
+            ServerControl35.InitTerm();
+            ServerControl36.InitTerm();
+            ServerControl37.InitTerm();
+            ServerControl38.InitTerm();
+            ServerControl39.InitTerm();
+            ServerControl310.InitTerm();
+            /* CheckBoxList1.Items[0].Selected = false;
+            CheckBoxList1.Items[1].Selected = false;
+            CheckBoxList1.Items[2].Selected = false;
+            CheckBoxList1.Items[3].Selected = false;
+            CheckBoxList1.Items[4].Selected = false;
+            PositionList.Items[0].Selected = false;
+            PositionList.Items[1].Selected = false;
+            PositionList.Items[2].Selected = false;
+            PositionList.Items[3].Selected = false;
+            PositionList.Items[4].Selected = false; */
+            ServerControl13.InitValue();
+            ServerControl12.InitValue();
+            ServerControl11.InitValue();
+            ServerControl14.InitValue();
+            ServerControl15.InitValue();
+            ServerControl16.InitValue();
+            ServerControl17.InitValue();
+            ServerControl18.InitValue();
+            ServerControl19.InitValue();
+            ServerControl110.InitValue();
+            ServerControl111.InitValue();
+            ServerControl112.InitValue();
+            ServerControl113.InitValue();
+            ServerControl114.InitValue();
+            ServerControl115.InitValue();
+            ServerControl116.InitValue();
+            ServerControl117.InitValue();
+            CommentsBox.Text = "Comment Here";
 
             MultiView1.ActiveViewIndex = 2;
         }
