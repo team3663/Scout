@@ -31,6 +31,8 @@ namespace DummyData
                     Apple += String.Format("{0},", BlockAuto == 1 ? "true" : "false");
                     int MoveAuto = myRandom.Next(0, 2);
                     Apple += String.Format("{0},", MoveAuto == 1 ? "true" : "false");
+                    int ShotAuto = myRandom.Next(0, 2);
+                    Apple += String.Format("{0},", ShotAuto == 1 ? "true" : "false");
                     int GoalieBox = myRandom.Next(0, 2);
                     Apple += String.Format("{0},", GoalieBox == 1 ? "true" : "false");
                     int Defense = myRandom.Next(0, 2);

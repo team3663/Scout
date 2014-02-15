@@ -10,6 +10,13 @@ using System.Web.UI.WebControls;
 
 namespace ServerControl3
 {
+    /// <summary>
+    /// This is the code for Server Control 3. Server Control 3 is a simple object that contains a button
+    /// and a label. The button changes from true and blue to false and red and back when clicked. This
+    /// function was made so that my robotics team could set simple functions that only have a true/false
+    /// option. Originally, check boxes were used, but cell phones could not see them, so this is the
+    /// result of that issue.
+    /// </summary>
     [DefaultProperty("Text")]
     [ToolboxData("<{0}:ServerControl3 runat=server></{0}:ServerControl3>")]
     public class ServerControl3 : CompositeControl
@@ -18,6 +25,9 @@ namespace ServerControl3
         Label title;
         Button yesButton;
 
+            /// <summary>
+            /// This function sets and reads the title.
+            /// </summary>
             [Bindable(true)]
             [Category("Appearance")]
             [DefaultValue("")]
@@ -37,7 +47,11 @@ namespace ServerControl3
                 }
             }
 
-
+            /// <summary>
+            /// This function adds a new feature to the button, its current state. This will return Off
+            /// if the button is red and false, but will return On if the button is blue and true. The 
+            /// ViewState of this function must not be named "Enabled", unless you want a name conflict.
+            /// </summary>
             [Bindable(true)]
             [Category("Appearance")]
             [DefaultValue("")]
@@ -56,7 +70,10 @@ namespace ServerControl3
                     ViewState["Banana"] = value;
                 }
             }
-
+            
+        /// <summary>
+        /// This is where we create the properties of the objects in use here.
+        /// </summary>
             protected override void CreateChildControls()
             {
                 title = new Label();
@@ -80,7 +97,13 @@ namespace ServerControl3
 
                 
             }
-
+            
+        /// <summary>
+        /// This is called when the button is clicked. It is for changing the state of the button in the next
+        /// replot of the client and for keeping track of our internal state.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
             protected void yesButton_Click(object sender, EventArgs e)
             {
                 if (ButtonState == "OFF")
@@ -98,6 +121,10 @@ namespace ServerControl3
                 }
             }
 
+        /// <summary>
+        /// Checks to see if the button is true or false. If true, it will return true.
+        /// </summary>
+        /// <returns></returns>
             public bool ButtonSelected()
             {
                 if (ButtonState == "ON")
@@ -111,6 +138,9 @@ namespace ServerControl3
                 }
             }
 
+        /// <summary>
+        /// When the object is initialized, it needs to start false and red.
+        /// </summary>
             public void InitTerm()
             {
                 ButtonState = "OFF";

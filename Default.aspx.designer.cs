@@ -67,24 +67,6 @@ namespace WebApplication1 {
         protected global::System.Web.UI.WebControls.TextBox TextBox3;
         
         /// <summary>
-        /// Label4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label4;
-        
-        /// <summary>
-        /// TextBox4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox4;
-        
-        /// <summary>
         /// Button2 control.
         /// </summary>
         /// <remarks>
@@ -229,13 +211,13 @@ namespace WebApplication1 {
         protected global::System.Web.UI.UpdatePanel UpdatePanel25;
         
         /// <summary>
-        /// ServerControl34 control.
+        /// ServerControl35 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::ServerControl3.ServerControl3 ServerControl34;
+        protected global::ServerControl3.ServerControl3 ServerControl35;
         
         /// <summary>
         /// UpdatePanel26 control.
@@ -247,13 +229,31 @@ namespace WebApplication1 {
         protected global::System.Web.UI.UpdatePanel UpdatePanel26;
         
         /// <summary>
-        /// ServerControl35 control.
+        /// ServerControl34 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::ServerControl3.ServerControl3 ServerControl35;
+        protected global::ServerControl3.ServerControl3 ServerControl34;
+        
+        /// <summary>
+        /// UpdatePanel28 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel UpdatePanel28;
+        
+        /// <summary>
+        /// ServerControl311 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::ServerControl3.ServerControl3 ServerControl311;
         
         /// <summary>
         /// Label10 control.

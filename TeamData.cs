@@ -5,6 +5,16 @@ using System.Web;
 
 namespace ParserWebApplication
 {
+    /// <summary>
+    /// This is the class TeamData. It is a very important class, and is one of the most vital classes to 
+    /// our robotics team's scouting report. This class takes the parsed information in MatchData.cs and 
+    /// divides it into meaningful categories. The autonomous categories, driving categories, truss
+    /// accuracy, high goal accuracy, low goal accuracy, and defense categories are organized to give us 
+    /// a good idea on who the best teams are. The ranking is the overall score of every one of these
+    /// categories, added together and weighted. All of these categories, as well as the important team
+    /// information, are placed onto a graph in Default.aspx. The things in the graph can be arranged
+    /// from best to worst or vice-versa very easily.
+    /// </summary>
     public class TeamData
     {
         private int teamNumber;
@@ -16,6 +26,7 @@ namespace ParserWebApplication
         private int autoHotGoal;
         private int autoBlock;
         private int autoMovement;
+        private int autoShotMade;
         private int goalieBoxPos;
         private int defensePos;
         private int centerPos;
@@ -40,17 +51,85 @@ namespace ParserWebApplication
         private int foulsCommitted;
 
 
+        /// <summary>
+        /// The auto score constructor.
+        /// </summary>
+        public int AutonomousScore
+        {
+            get
+            {
+                return ((((autoHighGoal * 5) + (autoLowGoal * 5)) * (autoShotMade)) + (autoMovement * 5) + (autoBlock * 8) + (autoHotGoal * 5));
+            }
+        }
+
+        /// <summary>
+        /// The driving score constructor.
+        /// </summary>
+        public int DrivingScore
+        {
+            get
+            {
+                return (int)(((speedAverage / matchCount) * 2) + ((manueverabilityAverage / matchCount) * 3) + ((competenceAverage / matchCount) * 1.5));
+            }
+        }
+
+        /// <summary>
+        /// All the rest of the constructors work the same way and are weighted in such a way to make a fair
+        /// ranking scale.
+        /// </summary>
+        public int TrussPercent
+        {
+            get
+            {
+                if (trussesMade + trussesMissed == 0)
+                {
+                    return 0;
+                }
+                return (100 * trussesMade / (trussesMade + trussesMissed));
+            }
+        }
+
+        public int HighGoalPercent
+        {
+            get
+            {
+                if (highGoalsMade + highGoalsMissed == 0)
+                {
+                    return 0;
+                }
+                return (100 * highGoalsMade / (highGoalsMade + highGoalsMissed));
+            }
+            
+        }
+
+        public int LowGoalPercent
+        {
+            get
+            {
+                if (lowGoalsMade + lowGoalsMissed == 0)
+                {
+                    return 0;
+                }
+                return (100 * lowGoalsMade / (lowGoalsMade + lowGoalsMissed));
+            }
+        }
+
+        public int DefenseScore
+        {
+            get
+            {
+                return ((passesBlocked) + (shotsBlocked * 2) - (foulsCommitted * 5));
+            }
+        }
 
         public int Ranking
         {
             get
             {
-                int retval = 0;
-                foreach(MatchData mData in matchDataList)
-                {
-                    retval += ((mData.AssistsGiven*5) + (mData.AssistsReceived*5) + (mData.HighGoalMade*3) + (mData.LowGoalMade*1) - (mData.Fouls*10) + (autoHotGoal*10));
-                }
-                return retval;
+                return ((AutonomousScore * 2) + DefenseScore + (DrivingScore * 3)
+                    + (int)(HighGoalPercent * (0.25 * highGoalsMade)) + (int)(LowGoalPercent * (0.125 * lowGoalsMade))
+                    + (TrussPercent / 2)
+                    + (assistsGiven * 5) + (assistsReceived * 5) + (Cycles * 4) - (FoulsCommitted * 10));
             }
         }
         public int TeamNumber
@@ -62,6 +141,7 @@ namespace ParserWebApplication
         {
             get { return matchCount; }
         }
+#if false
         public int AutoHighGoal
         {
             get
@@ -99,6 +179,14 @@ namespace ParserWebApplication
             get
             {
                 return autoMovement;
+            }
+        }
+
+        public int AutoShotMade
+        {
+            get
+            {
+                return autoShotMade;
             }
         }
 
@@ -168,7 +256,7 @@ namespace ParserWebApplication
 
             }
         }
-
+#endif
         public int Cycles
         {
             get
@@ -177,6 +265,7 @@ namespace ParserWebApplication
             }
         }
 
+#if false
         public int TrussesMade
         {
             get
@@ -240,7 +329,7 @@ namespace ParserWebApplication
                 return lowGoalsMissed;
             }
         }
-
+#endif
         public int AssistsReceived
         {
             get
@@ -256,7 +345,7 @@ namespace ParserWebApplication
                 return assistsGiven;
             }
         }
-
+#if false
         public int ShotsBlocked
         {
             get
@@ -272,7 +361,7 @@ namespace ParserWebApplication
                 return passesBlocked;
             }
         }
-
+#endif
         public int FoulsCommitted
         {
             get
@@ -284,6 +373,10 @@ namespace ParserWebApplication
 
 
 
+        /// <summary>
+        /// This checks for the team number and sets the team number to the number already acquired.
+        /// </summary>
+        /// <param name="MyTeamNumber"></param>
         public TeamData(int MyTeamNumber)
         {
             teamNumber = MyTeamNumber;
@@ -291,6 +384,11 @@ namespace ParserWebApplication
             ourData.Add(this);
         }
 
+        /// <summary>
+        /// Checks to see if the team number = MyTeamNumber.
+        /// </summary>
+        /// <param name="MyTeamNumber"></param>
+        /// <returns></returns>
         public static TeamData FindTeamData(int MyTeamNumber)
         {
             foreach(TeamData thisTeam in ourData)
@@ -304,6 +402,10 @@ namespace ParserWebApplication
             return null;
         }
 
+        /// <summary>
+        /// Determines how all the things are calculated for our graph.
+        /// </summary>
+        /// <param name="teamMatchData"></param>
         public void AddTeamData(MatchData teamMatchData)
         {
             matchCount++;
@@ -326,6 +428,10 @@ namespace ParserWebApplication
             if (teamMatchData.Movement)
             {
                 autoMovement++;
+            }
+            if (teamMatchData.ShotMade)
+            {
+                autoShotMade++;
             }
             if (teamMatchData.GoalieBox)
             {
@@ -368,468 +474,183 @@ namespace ParserWebApplication
 
             matchDataList.Add(teamMatchData);
         }
-
-        static IOrderedEnumerable<TeamData> DeriveSortExpression(string sortName, bool reverseSort)
+        
+        /// <summary>
+        /// This prepares the list to sort from best to worst and vice-versa. It takes the name of the column
+        /// for the graph.
+        /// </summary>
+        /// <param name="sortName">The name of the column.</param>
+        /// <returns></returns>
+        int SortValue(string sortName)
         {
             switch(sortName)
             {
                 case "TeamNumber":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.TeamNumber descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.TeamNumber
-                                   select td;
-                        }
+                        return teamNumber;
                     }
                 case "MatchCount":
                     {
-                       
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                    orderby td.MatchCount descending
-                                    select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                    orderby td.MatchCount
-                                    select td;
-                        }
+                       return matchCount;
                     }
-                case "AutoHighGoal":
+#if false  
+                    case "AutoHighGoal":
                     {
-
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoHighGoal descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoHighGoal
-                                   select td;
-                        }
+                        return autoHotGoal;
                     }
                 case "AutoLowGoal":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoLowGoal descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoLowGoal
-                                   select td;
-                        }
+                        return autoLowGoal;
                     }
                 case "AutoHotGoal":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoHotGoal descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoHotGoal
-                                   select td;
-                        }
+                        return autoHotGoal;
                     }
                 case "AutoBlock":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoBlock descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoBlock
-                                   select td;
-                        }
+                        return autoBlock;
                     }
                 case "AutoMovement":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoMovement descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AutoMovement
-                                   select td;
-                        }
+                        return autoMovement;
+                    }
+                case "AutoShotMade":
+                    {
+                        return autoShotMade;
                     }
                 case "GoalieBoxPos":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.GoalieBoxPos descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.GoalieBoxPos
-                                   select td;
-                        }
+                        return goalieBoxPos;
                     }
                 case "DefensePos":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.DefensePos descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.DefensePos
-                                   select td;
-                        }
+                       return defensePos;
                     }
                 case "CenterPos":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CenterPos descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CenterPos
-                                   select td;
-                        }
+                       return centerPos;
                     }
                 case "OffensePos":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.OffensePos descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.OffensePos
-                                   select td;
-                        }
+                        return offensePos;
                     }
                 case "OutOfPlayPos":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.OutOfPlayPos descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.OutOfPlayPos
-                                   select td;
-                        }
+                        return outOfPlayPos;
                     }
                 case "SpeedAverage":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.SpeedAverage descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.SpeedAverage
-                                   select td;
-                        }
+                        return SpeedAverage;
                     }
                 case "ManueverabilityAverage":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.ManueverabilityAverage descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.ManueverabilityAverage
-                                   select td;
-                        }
+                        return ManueverabilityAverage;
                     }
                 case "CompetenceAverage":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CompetenceAverage descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CompetenceAverage
-                                   select td;
-                        }
+                        return CompetenceAverage;
                     }
+#endif
                 case "Cycles":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.Cycles descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.Cycles
-                                   select td;
-                        }
+                        return cycles;
                     }
+#if false
                 case "TrussesMade":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.TrussesMade descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.TrussesMade
-                                   select td;
-                        }
+                        return trussesMade;
                     }
                 case "TrussesMissed":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.TrussesMissed descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.TrussesMissed
-                                   select td;
-                        }
+                        return trussesMissed;
                     }
                 case "CatchesMade":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CatchesMade descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CatchesMade
-                                   select td;
-                        }
+                        return catchesMade;
                     }
                 case "CatchesMissed":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CatchesMissed descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.CatchesMissed
-                                   select td;
-                        }
+                        return catchesMissed;
                     }
                 case "HighGoalsMade":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.HighGoalsMade descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.HighGoalsMade
-                                   select td;
-                        }
+                        return highGoalsMade;
                     }
                 case "HighGoalsMissed":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.HighGoalsMissed descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.HighGoalsMissed
-                                   select td;
-                        }
+                        return highGoalsMissed;
                     }
                 case "LowGoalsMade":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.LowGoalsMade descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.LowGoalsMade
-                                   select td;
-                        }
+                       return lowGoalsMade;
                     }
                 case "LowGoalsMissed":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.LowGoalsMissed descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.LowGoalsMissed
-                                   select td;
-                        }
+                        return lowGoalsMissed;
                     }
+#endif
                 case "AssistsReceived":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AssistsReceived descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AssistsReceived
-                                   select td;
-                        }
+                        return assistsReceived;
                     }
                 case "AssistsGiven":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AssistsGiven descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.AssistsGiven
-                                   select td;
-                        }
+                        return assistsGiven;
                     }
+#if false
                 case "ShotsBlocked":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.ShotsBlocked descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.ShotsBlocked
-                                   select td;
-                        }
+                        return shotsBlocked;
                     }
                 case "PassesBlocked":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.PassesBlocked descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.PassesBlocked
-                                   select td;
-                        }
+                        return passesBlocked;
                     }
+#endif
                 case "FoulsCommitted":
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.FoulsCommitted descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.FoulsCommitted
-                                   select td;
-                        }
+                       return foulsCommitted;
+                    }
+                case "AutonomousScore":
+                    {
+                        return AutonomousScore;
+                    }
+                case "DrivingScore":
+                    {
+                        return DrivingScore;
+                    }
+                case "TrussPercent":
+                    {
+                        return TrussPercent;
+                    }
+                case "HighGoalPercent":
+                    {
+                        return HighGoalPercent;
+                    }
+                case "LowGoalPercent":
+                    {
+                        return LowGoalPercent;
+                    }
+                case "DefenseScore":
+                    {
+                        return DefenseScore;
                     }
 
                 default:
                     {
-                        if (reverseSort)
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.Ranking descending
-                                   select td;
-                        }
-                        else
-                        {
-                            return from TeamData td in ourData
-                                   orderby td.Ranking
-                                   select td;
-                        }
+                        return Ranking;
                     }
+
             }
 
         }
 
+        /// <summary>
+        /// This function allows us to sort all the data and to sort in ascending or descending order in the
+        /// columns.
+        /// </summary>
+        /// <param name="sortExpression"></param>
+        /// <returns></returns>
         public static List<TeamData> GetTeamData(string sortExpression)
         {
             string sortName;
@@ -847,8 +668,17 @@ namespace ParserWebApplication
                     reverseSort = true;
                 }
             }
+            
 
-            var pleaseSort = DeriveSortExpression(sortName, reverseSort);
+
+            var pleaseSort = (reverseSort) 
+                            ? from TeamData td in ourData
+                              orderby td.SortValue(sortName) descending
+                              select td
+                              : from TeamData td in ourData
+                                orderby td.SortValue(sortName)
+                                select td;
+
 
             List<TeamData> retData = new List<TeamData>();
             foreach(TeamData td in pleaseSort)
@@ -857,6 +687,18 @@ namespace ParserWebApplication
             }
             return retData;
 
+        }
+
+        public static List<MatchData> GetMatchData(int teamnum)
+        {
+            foreach (TeamData td in ourData)
+            {
+                if (td.teamNumber == teamnum)
+                {
+                    return td.matchDataList;
+                }
+            }
+            return new List<MatchData>();
         }
     }
 }
